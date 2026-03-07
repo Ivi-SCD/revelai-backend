@@ -6,6 +6,7 @@ load_dotenv()
 
 class Config(BaseSettings):
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY")
+    MONGO_DB_CONNECTION_STRING: str = os.getnenv("MONGODB_CONNECTION_STRING")
 
 _settings_instance: Config | None = None
 
