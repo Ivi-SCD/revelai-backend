@@ -4,11 +4,15 @@ import os
 
 load_dotenv()
 
+
 class Config(BaseSettings):
-    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY")
-    MONGO_DB_CONNECTION_STRING: str = os.getnenv("MONGODB_CONNECTION_STRING")
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    MONGODB_CONNECTION_STRING: str = os.getenv("MONGODB_CONNECTION_STRING", "")
+    MONGODB_DATABASE_NAME: str = os.getenv("MONGODB_DATABASE_NAME", "revelai")
+
 
 _settings_instance: Config | None = None
+
 
 def get_settings() -> Config:
     global _settings_instance
