@@ -12,6 +12,7 @@ class ClienteResponse(BaseModel):
 
 
 class ProdutoCreateRequest(BaseModel):
+    id_cliente: str  # Cliente ao qual o produto pertence
     nome: str
     descricao: str
     tipo: str  # "servico" | "plataforma" | "consultoria"
@@ -19,6 +20,7 @@ class ProdutoCreateRequest(BaseModel):
 
 class ProdutoResponse(BaseModel):
     id_produto: str
+    id_cliente: Optional[str] = None
     nome: str
     descricao: str
     tipo: str

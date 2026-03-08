@@ -39,6 +39,7 @@ async def listar_clientes():
 @router.post("/produtos", response_model=ProdutoResponse)
 async def criar_produto(req: ProdutoCreateRequest):
     model = ProdutoModel(
+        id_cliente=req.id_cliente,
         nome=req.nome,
         descricao=req.descricao,
         tipo=req.tipo,

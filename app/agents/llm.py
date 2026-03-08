@@ -24,7 +24,7 @@ def _build_http_client() -> httpx.AsyncClient:
 def get_llm(
     temperature: float = 0.3,
     max_tokens: int = 4096,
-    model: str = "meta-llama/llama-4-scout-17b-16e-instruct",
+    model: str = "llama-3.3-70b-versatile",
 ) -> ChatGroq:
     """Return a ChatGroq instance that works behind corporate proxies."""
     settings = get_settings()

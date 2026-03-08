@@ -79,3 +79,80 @@ async def listar_documentos_cliente(id_cliente: str):
 )
 async def listar_documentos_cliente_produto(id_cliente: str, id_produto: str):
     return await _documento_svc.listar_por_cliente_produto(id_cliente, id_produto)
+
+
+# ── Histórico Unificado ────────────────────────────────────
+
+
+@router.get("/historico/cliente/{id_cliente}")
+async def obter_historico_unificado_cliente(id_cliente: str):
+    """
+    Retorna histórico unificado de reuniões e documentos do cliente,
+    ordenado por data (mais recente primeiro).
+    """
+    reunioes = await _reuniao_svc.listar_por_cliente(id_cliente)
+    documentos = await _documento_svc.listar_por_cliente(id_cliente)
+    
+    historico = []
+    
+    for r in reunioes:
+        historico.append({
+            "tipo": "reuniao",
+            "id": r.get("id_historico"),
+            "id_produto": r.get("id_produto"),
+            "data": r.get("data_reuniao"),
+            "conteudo": r.get("informacoes_reuniao"),
+            "created_at": r.get("created_at"),
+        })
+    
+    for d in documentos:
+        historico.append({
+            "tipo": "documento",
+            "id": d.get("id_documento"),
+            "id_produto": d.get("id_produto"),
+            "data": d.get("created_at", ""),
+            "conteudo": d.get("informacoes_completas"),
+            "created_at": d.get("created_at"),
+        })
+    
+    # Sort by date descending
+    historico.sort(key=lambda x: x.get("data") or x.get("created_at") or "", reverse=True)
+    
+    return {"historico": historico, "total": len(historico)}
+
+
+@router.get("/historico/cliente/{id_cliente}/produto/{id_produto}")
+async def obter_historico_unificado_cliente_produto(id_cliente: str, id_produto: str):
+    """
+    Retorna histórico unificado de reuniões e documentos do cliente/produto,
+    ordenado por data (mais recente primeiro).
+    """
+    reunioes = await _reuniao_svc.listar_por_cliente_produto(id_cliente, id_produto)
+    documentos = await _documento_svc.listar_por_cliente_produto(id_cliente, id_produto)
+    
+    historico = []
+    
+    for r in reunioes:
+        historico.append({
+            "tipo": "reuniao",
+            "id": r.get("id_historico"),
+            "id_produto": r.get("id_produto"),
+            "data": r.get("data_reuniao"),
+            "conteudo": r.get("informacoes_reuniao"),
+            "created_at": r.get("created_at"),
+        })
+    
+    for d in documentos:
+        historico.append({
+            "tipo": "documento",
+            "id": d.get("id_documento"),
+            "id_produto": d.get("id_produto"),
+            "data": d.get("created_at", ""),
+            "conteudo": d.get("informacoes_completas"),
+            "created_at": d.get("created_at"),
+        })
+    
+    # Sort by date descending
+    historico.sort(key=lambda x: x.get("data") or x.get("created_at") or "", reverse=True)
+    
+    return {"historico": historico, "total": len(historico)}

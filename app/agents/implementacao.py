@@ -48,15 +48,19 @@ Formato JSON:
 }}
 """
 
-TASKS_USER_PROMPT = """Com base na análise abaixo, gere as tasks de implementação e trilha de treinamento:
+TASKS_USER_PROMPT = """Com base na análise abaixo, gere as tasks de implementação e trilha de treinamento.
+
+IMPORTANTE: Use EXATAMENTE o nome do produto fornecido. NÃO invente nomes de produtos.
 
 ## Análise do Cliente
 {analise}
 
-## Informações do Produto
-{produto_info}
+## Informações do Produto (USE ESTE NOME EXATO)
+Nome do Produto: {nome_produto}
+Descrição: {descricao_produto}
+Tipo: {tipo_produto}
 
-Gere o JSON com tasks e treinamento:"""
+Gere o JSON com tasks e treinamento específicos para o produto "{nome_produto}":"""
 
 
 async def gerar_implementacao(analise: dict, produto_info: dict) -> dict:
@@ -78,7 +82,9 @@ async def gerar_implementacao(analise: dict, produto_info: dict) -> dict:
     result = await chain.ainvoke(
         {
             "analise": str(analise),
-            "produto_info": str(produto_info),
+            "nome_produto": produto_info.get("nome", "Produto"),
+            "descricao_produto": produto_info.get("descricao", ""),
+            "tipo_produto": produto_info.get("tipo", "plataforma"),
         }
     )
 
