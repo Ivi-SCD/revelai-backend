@@ -7,7 +7,7 @@ Analisa a análise do cliente e gera tasks de implementação e trilhas de trein
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.core.settings import get_settings
+from app.agents.llm import get_llm
 
 
 TASKS_SYSTEM_PROMPT = """Você é um gerente de projetos especialista em implementação de soluções tecnológicas.
@@ -59,21 +59,11 @@ TASKS_USER_PROMPT = """Com base na análise abaixo, gere as tasks de implementa�
 Gere o JSON com tasks e treinamento:"""
 
 
-def _get_llm() -> ChatGroq:
-    settings = get_settings()
-    return ChatGroq(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
-        api_key=settings.GROQ_API_KEY,
-        temperature=0.4,
-        max_tokens=4096,
-    )
-
-
 async def gerar_implementacao(analise: dict, produto_info: dict) -> dict:
     """
     Gera tasks de implementação e trilha de treinamento a partir da análise.
     """
-    llm = _get_llm()
+    llm = get_llm(temperature=0.4)
     parser = JsonOutputParser()
 
     prompt = ChatPromptTemplate.from_messages(

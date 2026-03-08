@@ -8,7 +8,7 @@ Categoriza sentimentos, gera recomendações e métricas de satisfação.
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.core.settings import get_settings
+from app.agents.llm import get_llm
 
 
 USO_SYSTEM_PROMPT = """Você é um analista de Customer Success especialista em análise de uso de produtos.
@@ -58,16 +58,6 @@ USO_USER_PROMPT = """Analise as seguintes reuniões pós-implementação do clie
 Gere a análise de uso JSON:"""
 
 
-def _get_llm() -> ChatGroq:
-    settings = get_settings()
-    return ChatGroq(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
-        api_key=settings.GROQ_API_KEY,
-        temperature=0.3,
-        max_tokens=4096,
-    )
-
-
 async def analisar_uso(
     reunioes: list[dict],
     produto_info: dict,
@@ -76,7 +66,7 @@ async def analisar_uso(
     """
     Analisa reuniões pós-implementação e gera análise de uso.
     """
-    llm = _get_llm()
+    llm = get_llm(temperature=0.3)
     parser = JsonOutputParser()
 
     prompt = ChatPromptTemplate.from_messages(

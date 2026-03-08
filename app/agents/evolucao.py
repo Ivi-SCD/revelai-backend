@@ -5,10 +5,9 @@ Analisa o histórico completo (uso, sentimento, reuniões) e mapeia a evolução
 do cliente: marcos de maturidade, tendências, oportunidades de expansão.
 """
 
-from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.core.settings import get_settings
+from app.agents.llm import get_llm
 
 
 EVOLUCAO_SYSTEM_PROMPT = """Você é um estrategista de Customer Success especialista em evolução e expansão de contas.
@@ -68,16 +67,6 @@ EVOLUCAO_USER_PROMPT = """Analise a evolução completa deste cliente:
 Gere a análise de evolução JSON:"""
 
 
-def _get_llm() -> ChatGroq:
-    settings = get_settings()
-    return ChatGroq(
-        model="meta-llama/llama-4-scout-17b-16e-instruct",
-        api_key=settings.GROQ_API_KEY,
-        temperature=0.3,
-        max_tokens=4096,
-    )
-
-
 async def analisar_evolucao(
     uso_data: dict,
     reunioes: list[dict],
@@ -88,7 +77,7 @@ async def analisar_evolucao(
     """
     Analisa a evolução completa do cliente e retorna marcos, tendências e recomendações.
     """
-    llm = _get_llm()
+    llm = get_llm(temperature=0.3)
     parser = JsonOutputParser()
 
     prompt = ChatPromptTemplate.from_messages(

@@ -54,9 +54,13 @@ class MongoManager:
 
     def get_database(self):
         if self._client is None:
+            import certifi
             from motor.motor_asyncio import AsyncIOMotorClient
 
-            self._client = AsyncIOMotorClient(get_settings().MONGODB_CONNECTION_STRING)
+            self._client = AsyncIOMotorClient(
+                get_settings().MONGODB_CONNECTION_STRING,
+                tlsCAFile=certifi.where(),
+            )
             self._db = self._client[get_settings().MONGODB_DATABASE_NAME]
         return self._db
 
