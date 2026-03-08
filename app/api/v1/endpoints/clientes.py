@@ -31,15 +31,9 @@ async def listar_clientes():
     return await _cliente_svc.listar_clientes()
 
 
-@router.get("/{id_cliente}", response_model=ClienteResponse)
-async def obter_cliente(id_cliente: str):
-    try:
-        return await _cliente_svc.obter_cliente(id_cliente)
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
-
-
 # ── Produtos ──────────────────────────────────────────────
+# NOTE: Produto routes MUST come before /{id_cliente} to avoid
+# FastAPI matching "produtos" as an id_cliente parameter.
 
 
 @router.post("/produtos", response_model=ProdutoResponse)
@@ -62,5 +56,16 @@ async def listar_produtos():
 async def obter_produto(id_produto: str):
     try:
         return await _produto_svc.obter_produto(id_produto)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+# ── Cliente by ID (must be LAST — catches any path segment) ──
+
+
+@router.get("/{id_cliente}", response_model=ClienteResponse)
+async def obter_cliente(id_cliente: str):
+    try:
+        return await _cliente_svc.obter_cliente(id_cliente)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
