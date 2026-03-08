@@ -1,5 +1,7 @@
 # RevelAI Backend
 
+![Imagem Logo Revelia](/docs/images/revelai.png)
+
 Plataforma de acompanhamento da jornada do cliente com IA — cobrindo todo o ciclo de **contratação → implantação → treinamento → uso → evolução**.
 
 ## Arquitetura
@@ -58,6 +60,11 @@ poetry run uvicorn app.main:app --reload
 8. **Gerar evolução (IA)** — `POST /api/v1/evolucao/gerar`
 9. **Jornada completa** — `GET /api/v1/jornada/cliente/{id}/produto/{id}`
 
-## API Docs
 
+## Arquitetura Longo Prazo
+
+![Imagem Arquitetura](/docs/images/diagrama-revelai.png)
+
+## API Docs
+ 
 Com o servidor rodando: [http://localhost:8000/docs](http://localhost:8000/docs)
