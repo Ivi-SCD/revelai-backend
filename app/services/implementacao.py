@@ -22,6 +22,7 @@ class ImplementacaoService:
         """
         Obtém a última análise, chama a IA para gerar tasks e treinamento,
         e persiste ambos no MongoDB.
+        Removes any existing tasks/treinamentos for this client/product first.
         """
         analise = await self._analise_repo.get_latest_by_cliente_produto(
             id_cliente, id_produto
@@ -32,6 +33,10 @@ class ImplementacaoService:
         produto = await self._produto_repo.get_by_id(id_produto)
         if not produto:
             raise ValueError(f"Produto {id_produto} não encontrado")
+
+        # Remove existing tasks and treinamentos to avoid duplicates
+        await self._task_repo.delete_by_cliente_produto(id_cliente, id_produto)
+        await self._treinamento_repo.delete_by_cliente_produto(id_cliente, id_produto)
 
         ai_result = await gerar_implementacao(analise=analise, produto_info=produto)
 

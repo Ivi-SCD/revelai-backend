@@ -24,6 +24,7 @@ class UsoService:
         """
         Verifica se todas as tasks estão concluídas. Se sim, coleta as reuniões
         posteriores à conclusão e gera a análise de uso via IA.
+        Replaces existing uso analysis if one exists.
         """
         all_done = await self._task_repo.are_all_completed(id_cliente, id_produto)
         if not all_done:
@@ -75,6 +76,10 @@ class UsoService:
         # Update product phase
         await self._produto_repo.update_fase(id_produto, "uso")
 
+        # Replace existing uso if one exists, otherwise create new
+        existing = await self._uso_repo.get_by_cliente_produto(id_cliente, id_produto)
+        if existing:
+            return await self._uso_repo.update(existing["id_uso"], uso.model_dump())
         return await self._uso_repo.create(uso)
 
     async def obter_uso(self, id_cliente: str, id_produto: str) -> dict:

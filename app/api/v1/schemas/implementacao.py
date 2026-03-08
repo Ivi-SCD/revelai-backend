@@ -18,7 +18,7 @@ class TaskResponse(BaseModel):
 
 
 class TaskUpdateRequest(BaseModel):
-    status: str  # "pendente" | "em andamento" | "concluida"
+    status: str  # "pendente" | "em_andamento" | "concluido"
 
 
 class ProgressoResponse(BaseModel):

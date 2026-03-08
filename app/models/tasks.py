@@ -8,4 +8,4 @@ class Tasks(BaseModel):
     descricao: str
     complexidade: int  # 0 a 5
     tempo_desenvolvimento: int  # em dias
-    status: str  # "pendente", "em andamento", "concluida"
+    status: str  # "pendente", "em_andamento", "concluido"

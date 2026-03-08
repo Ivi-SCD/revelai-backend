@@ -24,6 +24,13 @@ class TreinamentoRepository(BaseRepository):
             {"id_cliente": id_cliente, "id_produto": id_produto}
         )
 
+    async def delete_by_cliente_produto(self, id_cliente: str, id_produto: str) -> int:
+        """Delete all treinamentos for a given client/product. Returns count deleted."""
+        result = await self.collection.delete_many(
+            {"id_cliente": id_cliente, "id_produto": id_produto}
+        )
+        return result.deleted_count
+
     async def update_progresso(
         self, id_treinamento: str, progresso: float, status: str
     ) -> Optional[dict]:

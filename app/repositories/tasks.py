@@ -23,6 +23,13 @@ class TaskRepository(BaseRepository):
             {"id_cliente": id_cliente, "id_produto": id_produto}
         )
 
+    async def delete_by_cliente_produto(self, id_cliente: str, id_produto: str) -> int:
+        """Delete all tasks for a given client/product. Returns count deleted."""
+        result = await self.collection.delete_many(
+            {"id_cliente": id_cliente, "id_produto": id_produto}
+        )
+        return result.deleted_count
+
     async def update_status(self, id_task: str, status: str) -> Optional[dict]:
         return await self.update_one({"id_task": id_task}, {"status": status})
 
@@ -30,14 +37,14 @@ class TaskRepository(BaseRepository):
         tasks = await self.list_by_cliente_produto(id_cliente, id_produto)
         if not tasks:
             return False
-        return all(t["status"] == "concluida" for t in tasks)
+        return all(t["status"] == "concluido" for t in tasks)
 
     async def get_progress(self, id_cliente: str, id_produto: str) -> dict:
         tasks = await self.list_by_cliente_produto(id_cliente, id_produto)
         total = len(tasks)
         if total == 0:
             return {"total": 0, "concluidas": 0, "percentual": 0.0}
-        concluidas = sum(1 for t in tasks if t["status"] == "concluida")
+        concluidas = sum(1 for t in tasks if t["status"] == "concluido")
         return {
             "total": total,
             "concluidas": concluidas,
